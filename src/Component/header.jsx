@@ -78,9 +78,9 @@ function Header() {
   },
   {
     key: "generic",
-    name: "Generic",
-    heading: "Generic Gifts",
-    subheading: "Explore our versatile gift options for any occasion",
+    name: "Generic",//req
+    heading: "Generic Gifts",//rew
+    subheading: "Explore our versatile gift options for any occasion",//req
     links: [
       "Thank You Gifts",
       "Get Well Soon Gifts",
