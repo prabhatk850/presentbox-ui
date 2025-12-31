@@ -1,9 +1,9 @@
-
 import React, { useEffect, useState } from "react";
 import { RxHamburgerMenu } from "react-icons/rx";
 import { styled } from "styled-components";
 import { IoSearch } from "react-icons/io5";
 import Grid from "./atom/grid";
+import axios from "axios";
 
 const HeaderWrapper = styled.div`
   display: flex;
@@ -34,7 +34,7 @@ const Head = styled.div`
   display: flex;
   gap: 20px;
   align-items: center;
-`;  
+`;
 
 const Logo = styled.div`
   font-family: "BBH Bartle", sans-serif;
@@ -101,73 +101,85 @@ function Header() {
   const [activeKey, setActiveKey] = useState(null);
 
   useEffect(() => {
-     let mounted = true;
-     setHoveredMenu("home");
-    async function loadMenu() {
+    // setHoveredMenu("home");
+
+    const controller = new AbortController();
+
+    const fetchMenu = async () => {
       try {
-        const res = await fetch("http://localhost:1337/api/headers?populate[MenuDescription]=true&populate[Img]=true&populate[Navlink][populate][navlinks]=true");
-        if (!res.ok) throw new Error(`Failed to fetch: ${res.status}`);
-        const json = await res.json();
-        const items = (json.data || []).map((e) => {
-          // menu description and possible link groups (Navlink / MenuLink)
-          const menudescription = e.MenuDescription || {};
-          // Accept different possible field names coming from Strapi
-          const rawLinks = e.Navlink || e.NavLink || e.Navlinks || e.MenuLink || e.MenuLinks || e.links || [];
-
-          // Keep the image object (Grid component will resolve Strapi file objects)
-          const imgObj = e.Img || e.img || null;
-
-          return {
-            key: e.id,
-            name: e.Name || e.name || `item-${e.id}`,
-            heading: menudescription?.Heading || menudescription?.heading || e.Name || e.name || '',
-            subheading: menudescription?.Description || menudescription?.description || '',
-            // pass the raw links/groups so Grid can handle nested navlinks or flat arrays
-            links: Array.isArray(rawLinks) ? rawLinks : [],
-            img: imgObj,
-            grid: e.grid || 'heading_image_image',
-          };
+        const { data } = await axios.get("http://localhost:1337/api/headers", {
+          params: {
+            "populate[menuDescription]": true,
+            "populate[img]": true,
+            "populate[navlink][populate][navlinks]": true,
+          },
+          signal: controller.signal,
         });
 
-        if (mounted && items.length) {
-          setMENU(items);
-          setActiveKey((prev) => prev || items[0].key);
-        }
-      } catch (err) {
-        console.error("Failed to load menu", err);
-      }
-    }
+        const items =
+          data?.data?.map((e) => {
+            const menuDescription = e.menuDescription ?? {};
+            const navLinks = e.navlink ?? [];
 
-    loadMenu();
-    return () => {
-      mounted = false;
+            return {
+              key: e.id,
+              name: e.name,
+              heading: menuDescription.heading ?? "",
+              subheading: menuDescription.description ?? "",
+              links: navLinks,
+              img: e.img ?? null,
+              grid: e.grid ?? "heading_image_image",
+            };
+          }) ?? [];
+
+        if (items.length > 0) {
+          setMENU(items);
+
+          // 👇 first item becomes selected menu
+          // setSelectedMenu(items[0]);
+
+          // optional if you still need activeKey
+          setActiveKey(items[0].key);
+        }
+      } catch (error) {
+        if (!axios.isCancel(error)) {
+          console.error("Failed to load menu", error);
+        }
+      }
     };
+
+    fetchMenu();
+
+    return () => controller.abort();
   }, []);
 
   const activeMenu = MENU.find((m) => m.name === hoveredMenu);
-
 
   return (
     <div>
       <HeaderWrapper>
         <CoverLeft
-        $collapsed={hovered && hovered !== "left"}
-        $active={hovered === "left"}
-        onMouseEnter={() => setHovered("left") }
-        onMouseLeave={() => setHovered(null)}>
+          $collapsed={hovered && hovered !== "left"}
+          $active={hovered === "left"}
+          onMouseEnter={() => setHovered("left")}
+          onMouseLeave={() => setHovered(null)}
+        >
           <Head>
             <Logo>PresentBox</Logo>
             {!hovered && <RxHamburgerMenu size={22} />}
 
-            {hovered && Array.isArray(MENU) && MENU.map((e) => (
-              <Hover key={e.key} style={{ marginLeft: "50px" }}
-              $active={hoveredMenu === e.name}
-              onMouseEnter={() => setHoveredMenu(e.name)}
-              >
-                {e.name}
-              </Hover>
-            ))}
-  
+            {hovered &&
+              Array.isArray(MENU) &&
+              MENU.map((e) => (
+                <Hover
+                  key={e.key}
+                  style={{ marginLeft: "50px" }}
+                  $active={hoveredMenu === e.name}
+                  onMouseEnter={() => setHoveredMenu(e.name)}
+                >
+                  {e.name}
+                </Hover>
+              ))}
           </Head>
           {hovered && hoveredMenu && activeKey && activeMenu && (
             <Grid
@@ -183,10 +195,10 @@ function Header() {
         </CoverLeft>
 
         <CoverRight
-        $collapsed={hovered && hovered !== "right"}
-        onMouseEnter={() => setHovered("right")}
-        onMouseLeave={() => setHovered(null)}
-        $active={hovered === "right"}
+          $collapsed={hovered && hovered !== "right"}
+          onMouseEnter={() => setHovered("right")}
+          onMouseLeave={() => setHovered(null)}
+          $active={hovered === "right"}
         >
           <IoSearch />
           <IoSearch />
