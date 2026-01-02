@@ -10,7 +10,7 @@ const HeaderWrapper = styled.div`
   justify-content: space-between;
   background-size: cover;
   background-position: center;
-  padding: 0 111px;
+  padding: 0 64px;
   top: 63px;
   width: 100%;
   position: fixed;
@@ -18,6 +18,7 @@ const HeaderWrapper = styled.div`
 
 const Hover = styled.div`
   font-size: 20px;
+  font-weight: 400;
   margin: 10px 0px;
   padding: 8px 16px;
   border-radius: 25px;
@@ -33,6 +34,7 @@ const Hover = styled.div`
 const Head = styled.div`
   display: flex;
   gap: 20px;
+  height: 50px;
   align-items: center;
 `;
 
@@ -46,7 +48,7 @@ const CoverLeft = styled.div`
   display: ${({ $collapsed }) => ($collapsed ? "none" : "flex")};
   gap: 1rem;
   align-items: center;
-  height: 70px;
+  /* height: 70px; */
   padding: 10px 20px;
   width: ${({ $active }) => ($active ? "100%" : "fit-content")};
   overflow: hidden;
@@ -59,13 +61,12 @@ const CoverLeft = styled.div`
   color: #ffffff;
 
   &:hover {
-    cursor: pointer;
-    height: 60vh;
+    min-height: 60vh;
     display: flex;
     flex-direction: column;
     align-items: flex-start;
     transition: all 0.3s ease-in-out;
-    padding: 60px;
+    padding: 48px 60px 48px 60px;
     overflow: hidden;
     background-size: cover;
   }
@@ -86,7 +87,6 @@ const CoverRight = styled.div`
   color: #fff;
 
   &:hover {
-    cursor: pointer;
     height: auto;
     padding: 16px;
     transition: all 0.18s ease-in-out;
@@ -96,12 +96,12 @@ const CoverRight = styled.div`
 
 function Header() {
   const [hovered, setHovered] = useState(null);
-  const [hoveredMenu, setHoveredMenu] = useState(null);
+  const [hoveredMenu, setHoveredMenu] = useState("Home");
   const [MENU, setMENU] = useState([]);
-  const [activeKey, setActiveKey] = useState(null);
+  // const [activeKey, setActiveKey] = useState(null);
+
 
   useEffect(() => {
-    // setHoveredMenu("home");
 
     const controller = new AbortController();
 
@@ -139,7 +139,7 @@ function Header() {
           // setSelectedMenu(items[0]);
 
           // optional if you still need activeKey
-          setActiveKey(items[0].key);
+          // setActiveKey(items[0].key);
         }
       } catch (error) {
         if (!axios.isCancel(error)) {
@@ -154,6 +154,8 @@ function Header() {
   }, []);
 
   const activeMenu = MENU.find((m) => m.name === hoveredMenu);
+
+  
 
   return (
     <div>
@@ -181,8 +183,8 @@ function Header() {
                 </Hover>
               ))}
           </Head>
-          {hovered && hoveredMenu && activeKey && activeMenu && (
-            <Grid
+          {hovered && hoveredMenu  && activeMenu && (
+            <Grid 
               key={activeMenu.key}
               itemKey={activeMenu.key}
               heading={activeMenu.heading}

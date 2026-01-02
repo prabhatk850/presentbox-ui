@@ -1,6 +1,8 @@
 import React from "react";
 import Header from "../Component/header.jsx";
-import Footer from "../Component/footer.jsx";
+// import Footer from "../Component/footer.jsx";
+// import Card from "../Component/atom/card.jsx";
+import Use from "../Component/atom/use.jsx";
 
 function Home() {
   return (
@@ -14,7 +16,10 @@ function Home() {
     >
       <Header />
       <div style={{ height: "150vh" }}></div>
-      <Footer />
+      <Use/>
+
+      <div style={{ height: "150vh" }}></div>
+      {/* <Footer /> */}
     </div>
   );
 }
