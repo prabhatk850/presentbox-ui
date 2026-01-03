@@ -4,8 +4,6 @@ import Footer from "../Component/layout/footer.jsx";
 // import Card from "../Component/atom/card.jsx";
 import VideoComponent from "../Component/atom/videoComponent.jsx";
 import CategoryCard from "../Component/layout/categoryCards.jsx";
-import Header from "../Component/layout/header.jsx";
-import Footer from "../Component/layout/footer.jsx";
 import FeatureCard from "../Component/atom/featureCard.jsx";
 import ReviewCarousel from "../Component/layout/reviewCarousel.jsx";
 import styled from "styled-components";
