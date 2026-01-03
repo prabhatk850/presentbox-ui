@@ -103,8 +103,6 @@
 }
 
 body {
-  min-height: 100vh;
-  background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
   font-family: "Rubik", sans-serif;
   font-weight: 200;
 }

@@ -22,6 +22,7 @@ const Heading = styled.h2`
 const SubHeading = styled.p`
   margin-top: 8px;
   color: #777;
+
 `;
 
 const Controls = styled.div`
@@ -52,7 +53,7 @@ const ReviewCarousel = () => {
   const data = [
     {
       name: "Alice Johnson",  
-      rating: 5,
+      rating: 1,
       title: "Fantastic Service!",
       message:
         "I had an amazing experience shopping here. The products are top-notch and the customer service is outstanding!",
@@ -133,7 +134,7 @@ const ReviewCarousel = () => {
         </Controls>
       </Header>
 
-      <Track style={{ transform: `translateX(-${index * 560}px)` }}>
+      <Track >
         {data.map((item, i) => (
           <TestimonialCard key={i} data={item} />
         ))}
