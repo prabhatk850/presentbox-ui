@@ -5,12 +5,13 @@ import CardButtons from "./cardButtons";
 import { getImageUrl } from "../../api/config";
 
 const Card = styled.div`
-  background: #fff;
+  background: #F7F7F7;
   border-radius: 20px;
   padding: 20px;
+  /* width: 100%; */
   display: flex;
   gap: 20px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
+  /* box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06); */
 
   ${({ $variant }) =>
     $variant === "big" &&
@@ -20,7 +21,7 @@ const Card = styled.div`
     `}
 
   ${({ $variant }) =>
-    $variant === "rect" &&
+    $variant === "reactangle" &&
     css`
       flex-direction: row;
       align-items: center;
@@ -38,9 +39,9 @@ const ImageWrap = styled.div`
   flex-shrink: 0;
 
   ${({ $variant }) =>
-    $variant === "rect"
+    $variant === "reactangle"
       ? css`
-          width: 180px;
+          width: 310px;
         `
       : css`
           width: 100%;
@@ -51,6 +52,7 @@ const ImageWrap = styled.div`
     height: ${({ $variant }) => ($variant === "big" ? "400px" : "200px")};
     object-fit: cover;
     border-radius: 14px;
+    border: 1px solid gray;
   }
 `;
 
@@ -58,17 +60,19 @@ const Content = styled.div`
   display: flex;
   margin-top: 10px;
   flex-direction: column;
-  gap: 10px;
+  gap: 20px;
+  flex: 1;
 `;
 
 const Title = styled.h3`
   font-size: 20px;
-  margin: 0;
+  font-weight: 400;
+
 `;
 
 const Description = styled.p`
   font-size: 14px;
-  color: #666;
+  color: #9a9a9a;
   margin: 0;
 `;
 
@@ -82,6 +86,8 @@ function ProductCard({
   color,
 }) 
 {
+
+    console.log("varient", variant)
     
   return (
  

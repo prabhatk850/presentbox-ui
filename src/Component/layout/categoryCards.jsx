@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import ProductCard from "../atom/card.jsx";
+import { API_BASE } from "../../api/config.js";
 
 function ProductsGrid() {
   const [data, setData] = useState(null);
@@ -9,7 +10,7 @@ function ProductsGrid() {
     const fetchData = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:1337/api/category-cards?populate=*"
+          (`${API_BASE}/api/category-cards?populate=*`)
         );
         const data = response.data.data;
         console.log("Fetched data:", data);
@@ -25,7 +26,7 @@ function ProductsGrid() {
     <div
       style={{
         display: "grid",
-        gridTemplateColumns: "2fr 1fr auto",
+        gridTemplateColumns: "2fr 1fr 1fr",
         gap: "20px",
       }}
     >
