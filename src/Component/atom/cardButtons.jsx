@@ -14,7 +14,7 @@ const Action = styled.button`
   /* margin-right: 8px; */
   border: none;
   border-radius: 999px;
-  padding: 10px 16px;
+  padding: 18px 22px;
   cursor: pointer;
   width: fit-content;
 `;
@@ -40,7 +40,7 @@ function CardButtons({cta, color}) {
                 {cta}
               </Action> 
               <Cover style={{background:color==="Black" ? "#000" : "#fff", color:color==="Black" ? "#fff" : "#000"}}>
-              <LuArrowUpRight />
+              <LuArrowUpRight style={{height:"32px", width:"32px"}}/>
               </Cover>
     </Div>
   )

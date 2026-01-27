@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { RxHamburgerMenu } from "react-icons/rx";
 import { styled } from "styled-components";
 import { IoSearch } from "react-icons/io5";
+import { FaRegUserCircle } from "react-icons/fa";
 import Grid from "../atom/grid";
 import axios from "axios";
-// import CardButtons from "./atom/cardButtons";
+import { API_BASE } from "../../api/config";
 
 const HeaderWrapper = styled.div`
   display: flex;
@@ -40,76 +41,176 @@ const Head = styled.div`
   align-items: center;
 `;
 
+const SearchIcon = styled(IoSearch)`
+  cursor: pointer;
+  /* transition: all 0.3s ease; */
+  padding: 7px;
+  font-size: 44px;
+size: 35px;
+  &:hover {
+    /* transform: rotate(15deg); */
+    background-color: #454543;
+    border-radius: 50%;
+  }
+`;
+
 const Logo = styled.div`
   font-family: "BBH Bartle", sans-serif;
   font-weight: 400;
   font-size: 16px;
 `;
+
+// Search Modal Styles
+const SearchOverlay = styled.div`
+  background: #3B3B3B;
+  display: flex;
+  align-items: flex-start;
+  width: 100%;
+  justify-content: center;
+  padding: 10px 5px;
+  border-radius: 12px;
+  
+  z-index: 5000;
+`;
+
+
+
+
+
+const SearchInput = styled.input`
+  background: transparent;
+  border: none;
+  color: #ffffff;
+  font-size: 20px;
+  width: 100%;
+  padding: 0px 30px;
+ 
+  outline: none;
+  transition: all 0.3s ease;
+
+  &::placeholder {
+    color: #ffffff;
+  }
+
+  &:focus {
+    border-bottom-color: rgba(255, 255, 255, 0.8);
+  }
+`;
+
+
 // Left cover: primary menu area (darker, expands on hover)
 const CoverLeft = styled.div`
-  display: ${({ $collapsed }) => ($collapsed ? "none" : "flex")};
+  display: ${({ $isHidden }) => ($isHidden ? "none" : "flex")};
   gap: 1rem;
   align-items: center;
-  /* height: 70px; */
   padding: 10px 20px;
-  width: ${({ $active }) => ($active ? "100%" : "fit-content")};
+  width: fit-content;
   overflow: hidden;
   background: rgba(0, 0, 0, 0.95);
   border-radius: 32px;
   border: none;
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.12),
-  inset 0 1px 1px rgba(255, 255, 255, 0.06);
+  box-shadow:
+    0 12px 40px rgba(0, 0, 0, 0.12),
+    inset 0 1px 1px rgba(255, 255, 255, 0.06);
   color: #ffffff;
-  
+  transition: all 0.3s ease-in-out;
+
   &:hover {
-    background: linear-gradient(155deg, #000000 0%, #050505f0 90%,#000000 100%);
+    background: linear-gradient(
+      155deg,
+      #000000 0%,
+      #050505f0 90%,
+      #000000 100%
+    );
     min-height: 60vh;
-    display: flex;
+    width: 100%;
     flex-direction: column;
     align-items: flex-start;
-    transition: all 0.3s ease-in-out;
     padding: 48px 60px 48px 60px;
-    overflow: hidden;
-    background-size: cover;
   }
 `;
 
 // Right cover: search/utility area (lighter, different layout)
 const CoverRight = styled.div`
-  display: ${({ $collapsed }) => ($collapsed ? "none" : "flex")};
-  gap: 10px;
+  display: ${({ $isHidden }) => ($isHidden ? "none" : "flex")};
+  gap: 5px;
   align-items: center;
-  height: 48px;
-  padding: 8px 14px;
-  min-width: 64px;
+  justify-content: center;
+  padding: 10px 20px;
+  width: fit-content;
   overflow: hidden;
-  background: rgba(255, 255, 255, 0.06);
-  border-radius: 14px;
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  color: #fff;
+  background: rgba(0, 0, 0, 0.95);
+  border-radius: 32px;
+  height: 70px;
+  min-width: 100px;
+  border: none;
+  box-shadow:
+    0 12px 40px rgba(0, 0, 0, 0.12),
+    inset 0 1px 1px rgba(255, 255, 255, 0.06);
+  color: #ffffff;
+  transition: all 0.3s ease-in-out;
+  position: relative;
+  z-index: 2;
+  align-self: flex-end;
 
-  &:hover {
-    height: auto;
-    padding: 16px;
-    transition: all 0.18s ease-in-out;
-    background: rgba(255, 255, 255, 0.08);
-  }
+  ${({ $expanded }) =>
+    $expanded
+      ? `
+    background: linear-gradient(155deg, rgba(0, 0, 0, 0.95) 0%, rgba(5, 5, 5, 0.94) 90%, rgba(0, 0, 0, 0.95) 100%);
+    padding: 10px 20px;
+    gap: 30px;
+    border-radius: 32px;
+    flex-items: flex-start;
+    width: 100%;
+    padding: 10px 20px;
+  `
+      : ``};
 `;
 
-function Header() {
-  const [hovered, setHovered] = useState(null);
-  const [hoveredMenu, setHoveredMenu] = useState("Home");
-  const [MENU, setMENU] = useState([]);
-  // const [activeKey, setActiveKey] = useState(null);
+const Div = styled.div`
+  padding: 7px;
+  gap: 5px;
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+    border-radius: 30px;
+    padding: 7px;
+    height: 40px;
+    width: fit-content;
+    /* justify-content: center; */
+    /* align-items: center; */
+  }
+`;
+const SignIn = styled.div`
+  font-size: 14px;
+  font-weight: 400;
+  min-width: 50px;
+  cursor: pointer;
+`;
 
+const SearchHere = styled.div`
+display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 110px;
+  font-size: 14px;
+  font-weight: 400;
+  padding: 7px;
+  `;
+
+
+function Header() {
+  const [isLeftHovered, setIsLeftHovered] = useState(false);
+  const [isRightHovered, setIsRightHovered] = useState(false);
+  const [hoveredMenuName, setHoveredMenuName] = useState(null);
+  const [MENU, setMENU] = useState([]);
+  const rightRef = useRef(null);
 
   useEffect(() => {
-
     const controller = new AbortController();
 
     const fetchMenu = async () => {
       try {
-        const { data } = await axios.get("http://localhost:1337/api/headers", {
+        const { data } = await axios.get(`${API_BASE}/api/headers`, {
           params: {
             "populate[menuDescription]": true,
             "populate[img]": true,
@@ -118,6 +219,7 @@ function Header() {
           signal: controller.signal,
         });
 
+        console.log("Header menu data:", data);
         const items =
           data?.data?.map((e) => {
             const menuDescription = e.menuDescription ?? {};
@@ -136,12 +238,7 @@ function Header() {
 
         if (items.length > 0) {
           setMENU(items);
-
-          // 👇 first item becomes selected menu
-          // setSelectedMenu(items[0]);
-
-          // optional if you still need activeKey
-          // setActiveKey(items[0].key);
+          setHoveredMenuName(items[0].name);
         }
       } catch (error) {
         if (!axios.isCancel(error)) {
@@ -152,41 +249,53 @@ function Header() {
 
     fetchMenu();
 
-    return () => controller.abort();
+    const handleClickOutside = (e) => {
+      if (rightRef.current && !rightRef.current.contains(e.target)) {
+        setIsRightHovered(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      controller.abort();
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
   }, []);
 
-  const activeMenu = MENU.find((m) => m.name === hoveredMenu);
-
-  
+  const activeMenu = hoveredMenuName
+    ? MENU.find((m) => m.name === hoveredMenuName)
+    : null;
 
   return (
     <div>
       <HeaderWrapper>
         <CoverLeft
-          $collapsed={hovered && hovered !== "left"}
-          $active={hovered === "left"}
-          onMouseEnter={() => setHovered("left")}
-          onMouseLeave={() => setHovered(null)}
+          $isHidden={isRightHovered}
+          onMouseEnter={() => {
+            setIsLeftHovered(true);
+            setIsRightHovered(false);
+          }}
+          onMouseLeave={() => setIsLeftHovered(false)}
         >
           <Head>
             <Logo>PresentBox</Logo>
-            {!hovered && <RxHamburgerMenu size={22} />}
+            {!isLeftHovered && <RxHamburgerMenu size={22} />}
 
-            {hovered &&
+            {isLeftHovered &&
               Array.isArray(MENU) &&
               MENU.map((e) => (
                 <Hover
                   key={e.key}
                   style={{ marginLeft: "50px" }}
-                  $active={hoveredMenu === e.name}
-                  onMouseEnter={() => setHoveredMenu(e.name)}
+                  $active={hoveredMenuName === e.name}
+                  onMouseEnter={() => setHoveredMenuName(e.name)}
                 >
                   {e.name}
                 </Hover>
               ))}
           </Head>
-          {hovered && hoveredMenu  && activeMenu && (
-            <Grid 
+          {isLeftHovered && hoveredMenuName && activeMenu && (
+            <Grid
               key={activeMenu.key}
               itemKey={activeMenu.key}
               heading={activeMenu.heading}
@@ -199,20 +308,39 @@ function Header() {
         </CoverLeft>
 
         <CoverRight
-          $collapsed={hovered && hovered !== "right"}
-          onMouseEnter={() => setHovered("right")}
-          onMouseLeave={() => setHovered(null)}
-          $active={hovered === "right"}
+          ref={rightRef}
+          $isHidden={isLeftHovered}
+          $expanded={isRightHovered}
+          // onMouseLeave={() => setIsRightHovered(false)}
         >
-          <IoSearch />
-          <IoSearch />
-          <IoSearch />
-        </CoverRight>
+          <div style={{display:"flex"}}>
+          <SearchIcon
+            onClick={(e) => {
+              e.stopPropagation(); // prevent outside click trigger
+              setIsRightHovered(true);
+              setIsLeftHovered(false);
+            }}
+          />
+          {isRightHovered && <SearchHere>Explore Gifts</SearchHere>}
+</div>  
+          {isRightHovered && (
+            <SearchOverlay>
+              <SearchInput placeholder="Search..." />
+            </SearchOverlay>
+          )}
 
-      {/* <CardButtons 
-          color="White"
-          cta="View more"
-      /> */}
+          <Div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: "5px",
+            }}
+          >
+            <FaRegUserCircle size={25} />
+            <SignIn>Sign in</SignIn>
+          </Div>
+        </CoverRight>
       </HeaderWrapper>
     </div>
   );
