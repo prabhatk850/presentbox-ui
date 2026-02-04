@@ -4,6 +4,8 @@ import { LuArrowUpRight } from "react-icons/lu";
 // import { useState } from 'react';
 
 
+
+
 const Div = styled.div`
   display: inline-flex;
   align-items: center;
@@ -31,11 +33,11 @@ const Cover = styled.div`
 `;
 
 
-function CardButtons({cta, color}) {  
+function CardButtons({cta, color, onClick}) {  
   
 
   return (
-    <Div>
+    <Div onClick={onClick} style={{cursor: 'pointer'}}>
               <Action style={{background:color==="Black" ? "#000" : "#fff", color:color==="Black" ? "#fff" : "#000"}}>
                 {cta}
               </Action> 

@@ -3,6 +3,7 @@ import styled, { css } from "styled-components";
 // import { LuArrowUpRight } from "react-icons/lu";
 import CardButtons from "./cardButtons";
 import { getImageUrl } from "../../api/config";
+import { useNavigate } from 'react-router-dom';
 
 const Card = styled.div`
   background: #F7F7F7;
@@ -86,7 +87,7 @@ function ProductCard({
   color,
 }) 
 {
-
+    const navigate = useNavigate();
     console.log("varient", variant)
     
   return (
@@ -100,7 +101,7 @@ function ProductCard({
       <Content>
         <Title>{title}</Title>
         {description && <Description>{description}</Description>}
-        <CardButtons color={color} cta={cta}/>
+          <CardButtons onClick={() => navigate("/products")} color={color} cta={cta}/>
       </Content>
     </Card>
 
