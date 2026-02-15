@@ -101,7 +101,14 @@ function ProductCard({
       <Content>
         <Title>{title}</Title>
         {description && <Description>{description}</Description>}
-          <CardButtons onClick={() => navigate("/products")} color={color} cta={cta}/>
+          {/* pass the title as the category in navigation state */}
+          <CardButtons
+            onClick={() =>
+              navigate("/products", { state: { category: title } })
+            }
+            color={color}
+            cta={cta}
+          />
       </Content>
     </Card>
 

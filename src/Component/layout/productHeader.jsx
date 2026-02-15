@@ -16,10 +16,26 @@ gap: 10px;
 
 
 
-function ProductHeader() {
+function ProductHeader({ dynamicCategory }) {
+    // base options
+    const baseCategories = ["All Products", "Fashion", "Home", "Beauty", "Sports"];
 
-    const categorys = ["All Products", "Fashion", "Home", "Beauty", "Sports"];
-    const [selectedCategory, setSelectedCategory] = useState("All Products");
+    // if a dynamicCategory prop was passed and it's not already listed, add it temporarily
+    const categorys = dynamicCategory
+        ? Array.from(new Set([...baseCategories, dynamicCategory]))
+        : baseCategories;
+
+    const [selectedCategory, setSelectedCategory] = useState(
+        dynamicCategory || "All Products"
+    );
+
+    // if the dynamicCategory prop changes (e.g. user clicks another product while already on the
+    // products page), update the selected bubble
+    React.useEffect(() => {
+        if (dynamicCategory) {
+            setSelectedCategory(dynamicCategory);
+        }
+    }, [dynamicCategory]);
 
   return (
     <Wrapper>
