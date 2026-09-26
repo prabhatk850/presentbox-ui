@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import { LuArrowUpRight } from "react-icons/lu";
 import Line from "./line";
-import { getImageUrl } from "../../api/config";
+import { getImageUrl } from "../../api";
 
 const Div = styled.div`
   width: 100%;

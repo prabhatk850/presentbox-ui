@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
-import axios from "axios";
 import FooterMenuCard from "../atom/footerMenuCard";
 import NewLetterCard from "../atom/newletter";
-import { API_BASE } from "../../api/config";
+import { getFooter } from "../../api";
 
 const FooterWrapper = styled.div`
   display: flex;
@@ -33,25 +32,16 @@ function Footer() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const controller = new AbortController();
-
     (async () => {
       try {
-        console.log("Fetching footer data...", `${API_BASE}/api/footerr`);
-        const { data } = await axios.get(`${API_BASE}/api/footerr`, {
-          params: { populate: { section: { populate: { item: "*" } } } },
-          signal: controller.signal,
-        });
+        const data = await getFooter();
         setSections(data?.data || []);
-        console.log("Footer data:", data);
       } catch (err) {
-        if (!axios.isCancel?.(err)) console.error("Footer load error:", err);
+        console.error("Footer load error:", err);
       } finally {
         setLoading(false);
       }
     })();
-
-    return () => controller.abort();
   }, []);
 
   if (loading) return <footer>Loading…</footer>;

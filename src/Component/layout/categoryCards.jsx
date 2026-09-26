@@ -1,7 +1,20 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+import styled from "styled-components";
 import ProductCard from "../atom/card.jsx";
-import { API_BASE } from "../../api/config.js";
+import { getCategoryCards } from "../../api";
+
+const CardsGrid = styled.div`
+  display: grid;
+  grid-template-columns: 3fr 2fr 2fr;
+  gap: 20px;
+
+  @media (max-width: 1024px) {
+    grid-template-columns: 1fr 1fr;
+  }
+  @media (max-width: 640px) {
+    grid-template-columns: 1fr;
+  }
+`;
 
 function ProductsGrid() {
   const [data, setData] = useState(null);
@@ -9,10 +22,7 @@ function ProductsGrid() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(
-          (`${API_BASE}/api/category-cards?populate=*`)
-        );
-        const data = response.data.data;
+        const { data } = await getCategoryCards();
         console.log("Fetched data:", data);
         setData(data);
       } catch (error) {
@@ -23,13 +33,7 @@ function ProductsGrid() {
   }, []);
 
   return (
-    <div
-      style={{
-        display: "grid",
-        gridTemplateColumns: "2fr 1fr 1fr",
-        gap: "20px",
-      }}
-    >
+    <CardsGrid>
       {data && data.map((data) => (
         <ProductCard
           key={data.id}
@@ -37,11 +41,10 @@ function ProductsGrid() {
           title={data.title}
           description={data.description}
           image={data?.img}
-          cta={data.button.name}
-          color={data.button.color}
+          button={data.button}
       />
       ))}
-    </div>
+    </CardsGrid>
   );
 }
 export default ProductsGrid;

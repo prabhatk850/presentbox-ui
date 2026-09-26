@@ -1,0 +1,52 @@
+{
+  "data": [
+    {
+      "id": 1,
+      "type": "New",
+      "Raiting": 4.5,
+      "name": "eDisplay XG",
+      "price": "USD 649.99",
+      "img": "https://i.pinimg.com/1200x/2c/7d/ef/2c7defb55d5b41aecf4a71cebb617aa8.jpg"
+    },
+    {
+      "id": 2,
+      "type": "Hot",
+      "Raiting": 4.1,
+      "name": "eDisplay Pro",
+      "price": "USD 799.99",
+      "img": "https://i.pinimg.com/1200x/24/c7/28/24c72886928b5122fa8c94abc3b2667d.jpg"
+    },
+    {
+      "id": 3,
+      "type": "Sale",
+      "Raiting": 4.7,
+      "name": "eDisplay Lite",
+      "price": "USD 499.99",
+      "img": "https://i.pinimg.com/1200x/de/02/55/de025520655e8aa7bd9c65d4c79cd64c.jpg"
+    },
+    {
+      "id": 4,
+      "type": "New",
+      "Raiting": 4.5,
+      "name": "eDisplay XG",
+      "price": "USD 649.99",
+      "img": "https://i.pinimg.com/1200x/24/c7/28/24c72886928b5122fa8c94abc3b2667d.jpg"
+    },
+    {
+      "id": 5,
+      "type": "Hot",
+      "Raiting": 4.1,
+      "name": "eDisplay Pro",
+      "price": "USD 799.99",
+      "img": "https://i.pinimg.com/1200x/2c/7d/ef/2c7defb55d5b41aecf4a71cebb617aa8.jpg"
+    },
+    {
+      "id": 6,
+      "type": "Sale",
+      "Raiting": 4.7,
+      "name": "eDisplay Lite",
+      "price": "USD 499.99",
+      "img": "https://i.pinimg.com/1200x/de/02/55/de025520655e8aa7bd9c65d4c79cd64c.jpg"
+    }
+  ]
+}

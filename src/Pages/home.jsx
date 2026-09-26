@@ -25,8 +25,7 @@ const Section = styled.section`
 `;
 
 const Body = styled.div`
-  max-width: 1500px;
-  margin: auto;
+  padding: 64px;
   display: flex;
   flex-direction: column;
   gap: 80px;

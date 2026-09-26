@@ -33,15 +33,18 @@ const Cover = styled.div`
 `;
 
 
-function CardButtons({cta, color, onClick}) {  
-  
+// color = button background, textColor = text/icon color (any CSS color).
+// No cta = arrow-only button.
+// Defaults: white button with black text; a colored button gets white text unless textColor is set.
+function CardButtons({cta, color, textColor, onClick}) {
+  const style = { background: color || "#fff", color: textColor || (color ? "#fff" : "#000") };
 
   return (
     <Div onClick={onClick} style={{cursor: 'pointer'}}>
-              <Action style={{background:color==="Black" ? "#000" : "#fff", color:color==="Black" ? "#fff" : "#000"}}>
+              {cta && <Action style={style}>
                 {cta}
-              </Action> 
-              <Cover style={{background:color==="Black" ? "#000" : "#fff", color:color==="Black" ? "#fff" : "#000"}}>
+              </Action>}
+              <Cover style={style}>
               <LuArrowUpRight style={{height:"32px", width:"32px"}}/>
               </Cover>
     </Div>

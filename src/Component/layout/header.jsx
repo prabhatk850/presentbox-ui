@@ -5,8 +5,7 @@ import { IoSearch } from "react-icons/io5";
 import { FaRegUserCircle } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import Grid from "../atom/grid";
-import axios from "axios";
-import { API_BASE } from "../../api/config";
+import { getHeaders } from "../../api";
 
 const HeaderWrapper = styled.div`
   display: flex;
@@ -209,20 +208,9 @@ function Header() {
   const rightRef = useRef(null);
 
   useEffect(() => {
-    const controller = new AbortController();
-
     const fetchMenu = async () => {
       try {
-        const { data } = await axios.get(`${API_BASE}/api/headers`, {
-          params: {
-            "populate[menuDescription]": true,
-            "populate[img]": true,
-            "populate[navlink][populate][navlinks]": true,
-          },
-          signal: controller.signal,
-        });
-
-        console.log("Header menu data:", data);
+        const data = await getHeaders();
         const items =
           data?.data?.map((e) => {
             const menuDescription = e.menuDescription ?? {};
@@ -244,9 +232,7 @@ function Header() {
           setHoveredMenuName(items[0].name);
         }
       } catch (error) {
-        if (!axios.isCancel(error)) {
-          console.error("Failed to load menu", error);
-        }
+        console.error("Failed to load menu", error);
       }
     };
 
@@ -260,7 +246,6 @@ function Header() {
 
     document.addEventListener("mousedown", handleClickOutside);
     return () => {
-      controller.abort();
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);

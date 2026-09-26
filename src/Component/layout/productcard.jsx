@@ -1,7 +1,8 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import { MdStar } from "react-icons/md";
 import CircleButton from '../atom/circleButton';
+import { getProducts } from '../../api';
 
 const Wrapper=styled.div`
   display: grid;
@@ -92,58 +93,17 @@ const Price=styled.div`
 
 function ProductCard() {
 
-  const Testdata=[
-    {id:1, 
-      type:"New",
-      Raiting:4.5,
-      name:"eDisplay XG", 
-      price:"USD 649.99", 
-      img:"https://intuitive-beauty-55ad61f540.media.strapiapp.com/d5e5c8f729ff158ff03a5ee7bf8a6d93_8bc39da1e7.jpg"
-    },
-    {
-      id:2, 
-      type:"Hot",
-      Raiting:4.1,
-      name:"eDisplay Pro", 
-      price:"USD 799.99", 
-      img:"https://i.pinimg.com/1200x/24/c7/28/24c72886928b5122fa8c94abc3b2667d.jpg"
-    },
-    {
-      id:3, 
-      type:"Sale",
-      Raiting:4.7,
-      name:"eDisplay Lite",
-      price:"USD 499.99",
-      img:"https://i.pinimg.com/1200x/de/02/55/de025520655e8aa7bd9c65d4c79cd64c.jpg"
-    },
-          {id:4, 
-      type:"New",
-      Raiting:4.5,
-      name:"eDisplay XG", 
-      price:"USD 649.99", 
-      img:"https://i.pinimg.com/1200x/24/c7/28/24c72886928b5122fa8c94abc3b2667d.jpg"
-    },
-    {
-      id:5, 
-      type:"Hot",
-      Raiting:4.1,
-      name:"eDisplay Pro",
-      price:"USD 799.99",
-      img:"https://intuitive-beauty-55ad61f540.media.strapiapp.com/d5e5c8f729ff158ff03a5ee7bf8a6d93_8bc39da1e7.jpg"
-    },
-    {
-      id:6,
-      type:"Sale",
-      Raiting:4.7,
-      name:"eDisplay Lite",
-      price:"USD 499.99",
-      img:"https://i.pinimg.com/1200x/de/02/55/de025520655e8aa7bd9c65d4c79cd64c.jpg"
-    },
-  ]
+  const [data, setdata] = useState([]);
+
+  useEffect(() => {
+    getProducts()
+      .then(({ data }) => setdata(data))
+      .catch((error) => console.error("Error fetching products:", error));
+  }, []);
 
   return (
     <Wrapper>
-      {Testdata.map((item)=> (
+      {data.map((item)=> (
         <Grid key={item.id}>
           <Background>
             <Detail>
